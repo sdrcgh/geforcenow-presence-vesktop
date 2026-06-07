@@ -100,14 +100,12 @@ make enable
 sudo dnf install -y golang gtk3-devel libayatana-appindicator-gtk3-devel
 
 # Clone this fork (not the upstream repo)
-git clone https://github.com/YOUR_USERNAME/geforcenow-presence.git
+git clone https://github.com/sdrcgh/geforcenow-presence-vesktop.git
 cd geforcenow-presence
 
 # Build and install everything
 make install
 ```
-
-Replace `YOUR_USERNAME` with your GitHub username.
 
 `make install` sets up everything needed for production use:
 
