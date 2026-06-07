@@ -1,3 +1,9 @@
+> **This is an unofficial fork of [joshmckinney/geforcenow-presence](https://github.com/joshmckinney/geforcenow-presence) with added support for Vesktop (the native RPM build).**
+> All credit for the original project goes to [Josh McKinney](https://github.com/joshmckinney).
+> See [Changes from upstream](#changes-from-upstream) for details.
+
+---
+
 <div align="center">
   <h1>🎮 GeForce NOW Rich Presence for Discord — Linux</h1>
   <p>
@@ -186,6 +192,24 @@ Contributions are welcome! Areas where help is appreciated:
 This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 This is a Linux fork of the original [GeForce NOW Rich Presence](https://github.com/KarmaDevz/GeForce-NOW-Rich-Presence) by [KarmaDevz](https://github.com/KarmaDevz), completely rewritten from Python to Go for native Linux/Wayland support by [Josh McKinney](https://github.com/joshmckinney). 
+
+---
+
+## Changes from upstream
+
+### Vesktop Support
+
+The original project only detects the official Discord RPM as a running Discord client. This fork adds support for **[Vesktop](https://github.com/Vencord/Vesktop)** (native RPM install), which uses its own binary named `vesktop`.
+
+**Files changed:**
+
+- `internal/launcher/launcher.go` — added `IsDiscordRunning()` which checks for `discord`, `vesktop`, and `equibop` process names; updated `LaunchDiscord()` to also look for Vesktop at `/usr/bin/vesktop`
+- `internal/presence/presence.go` — replaced the hardcoded `IsProcessRunning("Discord")` check with the new `IsDiscordRunning()`
+- `internal/discord/rpc.go` — added the Vesktop Flatpak IPC socket path as an additional search location
+
+**Why it was broken:** Vesktop creates the Discord IPC socket at the exact same standard path (`$XDG_RUNTIME_DIR/discord-ipc-0`) as the official Discord RPM — so the IPC side was never the problem. The tool was simply checking whether a process named `Discord` was running, finding none, and giving up before even attempting to connect.
+
+Tested on **Fedora 44 Workstation** with Vesktop native RPM.
 
 ---
 
