@@ -212,10 +212,22 @@ func findDiscordSocket() string {
 		runtimeDir = fmt.Sprintf("/run/user/%d", os.Getuid())
 	}
 
-	// Try discord-ipc-0 through discord-ipc-9
+	// Try discord-ipc-0 through discord-ipc-9 in standard location.
+	// Native Discord RPM and Vesktop RPM both use this path via arRPC.
 	for i := 0; i < 10; i++ {
 		path := filepath.Join(runtimeDir, fmt.Sprintf("discord-ipc-%d", i))
 		if _, err := os.Stat(path); err == nil {
+			log.Printf("🔌 Found Discord IPC socket: %s", path)
+			return path
+		}
+	}
+
+	// Vesktop Flatpak puts the socket inside its sandbox xdg-run dir
+	vesdktopFlatpakDir := filepath.Join(runtimeDir, ".flatpak", "dev.vencord.Vesktop", "xdg-run")
+	for i := 0; i < 10; i++ {
+		path := filepath.Join(vesdktopFlatpakDir, fmt.Sprintf("discord-ipc-%d", i))
+		if _, err := os.Stat(path); err == nil {
+			log.Printf("🔌 Found Vesktop Flatpak IPC socket: %s", path)
 			return path
 		}
 	}
@@ -224,6 +236,7 @@ func findDiscordSocket() string {
 	for i := 0; i < 10; i++ {
 		path := filepath.Join("/tmp", fmt.Sprintf("discord-ipc-%d", i))
 		if _, err := os.Stat(path); err == nil {
+			log.Printf("🔌 Found Discord IPC socket (tmp): %s", path)
 			return path
 		}
 	}
@@ -234,6 +247,7 @@ func findDiscordSocket() string {
 		for i := 0; i < 10; i++ {
 			path := filepath.Join(snapDir, fmt.Sprintf("discord-ipc-%d", i))
 			if _, err := os.Stat(path); err == nil {
+				log.Printf("🔌 Found Discord Snap IPC socket: %s", path)
 				return path
 			}
 		}
