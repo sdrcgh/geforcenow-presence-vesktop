@@ -90,14 +90,14 @@ func (m *Manager) check() {
 		return
 	}
 	
-	// Check if Discord is running
-	if !launcher.IsProcessRunning("Discord") {
+	// Check if Discord (or a compatible client like Vesktop) is running
+	if !launcher.IsDiscordRunning() {
 		if m.rpc != nil {
 			m.rpc.Close()
 			m.rpc = nil
 		}
 		ui.SetStatus("error", "")
-		m.logOnce("⚠️ Discord is not running")
+		m.logOnce("⚠️ Discord (or Vesktop) is not running")
 		return
 	}
 
