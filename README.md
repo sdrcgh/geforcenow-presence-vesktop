@@ -14,15 +14,9 @@
     detects the game you're playing via the window title, and updates your Discord Rich Presence
     with the correct game name, artwork, and elapsed time.
   </p>
-
-  [![Latest Release](https://img.shields.io/github/v/release/joshmckinney/geforcenow-presence?style=for-the-badge&color=00C853&logo=github)](https://github.com/joshmckinney/geforcenow-presence/releases/latest)
-  [![Downloads](https://img.shields.io/github/downloads/joshmckinney/geforcenow-presence/total?style=for-the-badge&color=2962FF&logo=github)](https://github.com/joshmckinney/geforcenow-presence/releases)
-  <br>
-  [![CI](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/ci.yml/badge.svg)](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/ci.yml)
-  <br>
-  [![Test](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/test.yml/badge.svg)](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/test.yml)
-  [![Build](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/build.yml/badge.svg)](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/build.yml)
-  [![Lint](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/lint.yml/badge.svg)](https://github.com/joshmckinney/geforcenow-presence/actions/workflows/lint.yml)
+  <p>
+    <strong>✅ This fork works with Vesktop (native RPM) in addition to the official Discord client.</strong>
+  </p>
 </div>
 
 ---
@@ -30,6 +24,7 @@
 ## ✨ Features
 
 - 🐧 **Native Linux support** — compiled Go binary, zero runtime dependencies
+- 💬 **Vesktop support** — works with Vesktop (native RPM), Discord RPM/DEB, and Flatpak
 - 🎮 **Automatic game detection** — reads the GeForce NOW window title via GNOME Shell extension D-Bus
 - 🖼️ **Zero-Auth Metadata Pipeline** — queries public Steam and GOG APIs to push live HTTP box-art URLs to Discord natively without developer keys
 - 🌟 **Native Discord Apps Tracking** — dynamically syncs with Discord's 22,000+ app database. Fuzzy matches game strings directly to official Client IDs to natively display the game on your profile.
@@ -37,7 +32,7 @@
 - ⚙️ **Persistent Configuration** — Polling intervals, startup delays, and language settings are saved and easily editable via the System Tray.
 - 🎨 **Custom Status Colors** — Personalize your tray icon's "Playing", "Idle", and "Error" states via a built-in color picker.
 - 🛡️ **Optional Game History** — Capture Geforce NOW sessions in your Discord 30-day activity record via a specialized dummy-process launcher (disabled by default).
-- 🚀 **Update Checker** — Automatic background checks for new releases on startup + manual check button.
+- 🔍 **Update Checker** — Automatic background checks for new releases on startup + manual check button.
 - 📂 **Quick Access** — Open logs or configuration folders directly from the tray.
 - 🧩 **Multi-compositor support** — GNOME (Wayland), X11 (xprop/xdotool), Hyprland, with fallback chain
 - 🔒 **Single instance** — lock file prevents duplicate processes
@@ -49,41 +44,70 @@
 
 | Requirement | Details |
 |:---|:---|
-| **OS** | Linux (tested on Fedora 43, should work on any distro with GNOME 45+) |
+| **OS** | Linux (tested on Fedora 44, should work on any distro with GNOME 45+) |
 | **GeForce NOW** | [Official Nvidia Flatpak](https://international.download.nvidia.com/GFNLinux/flatpak/geforcenow.flatpakrepo) (`com.nvidia.geforcenow`) |
-| **Discord** | Native install (RPM/DEB) or Flatpak |
-| **Go** | 1.25+ (build only — not needed to run the binary) |
+| **Discord client** | [Vesktop](https://github.com/Vencord/Vesktop) (native RPM), Discord native RPM/DEB, or Discord Flatpak |
+| **Go** | 1.21+ (build only — not needed to run the binary) |
 | **Build Dependencies** | `libayatana-appindicator3-dev` (Debian/Ubuntu) or `libayatana-appindicator-gtk3-devel` (Fedora/RHEL)<br>`libgtk-3-dev` (Debian/Ubuntu) or `gtk3-devel` (Fedora/RHEL) |
 | **Desktop** | GNOME on Wayland (primary), X11, Hyprland (experimental) |
 
-> **Note:** Running GeForce NOW via Chrome/Edge browser is **not currently supported** — only the official Flatpak app. Browser support could be added by detecting the browser window title similarly.
+> **Note:** Running GeForce NOW via Chrome/Edge browser is **not currently supported** — only the official Flatpak app.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Fedora)
 
 ```bash
-# Clone and build
-git clone https://github.com/joshmckinney/geforcenow-presence.git
-cd geforcenow-presence
-make install
-```
+# 1. Install build dependencies
+sudo dnf install -y golang gtk3-devel libayatana-appindicator-gtk3-devel
 
-After the first run, **log out and back in** to activate the GNOME Shell extension.
+# 2. Clone this fork
+git clone https://github.com/sdrcgh/geforcenow-presence-vesktop.git
+cd geforcenow-presence
+
+# 3. Build and install
+make install
+
+# 4. Log out and back in to activate the GNOME Shell extension, then:
+make enable
+```
 
 ---
 
 ## 📥 Installation
 
-### 📦 Native Packages (Recommended)
-Download the latest release for your distribution:
-- **Debian / Ubuntu / Mint**: `.deb` package
-- **Fedora / RHEL / openSUSE**: `.rpm` package
-- **Generic Linux**: `.tar.gz` bundle
+### 📦 Download a Pre-built Release (Easiest)
 
-Install using your package manager (e.g., `sudo dnf install ./geforcenow-presence.rpm`).
+Go to the [Releases page](../../releases) of this fork and download the `.tar.gz` for your system. Extract it and run:
 
-### 🛠️ Build from Source (`make install`)
+```bash
+sudo dnf install -y golang gtk3-devel libayatana-appindicator-gtk3-devel
+tar -xzf geforcenow-presence-vesktop.tar.gz
+cd patched-src
+make install
+```
+
+Then log out and back in, and run:
+
+```bash
+make enable
+```
+
+### 🛠️ Build from Source
+
+```bash
+# Install build dependencies (Fedora/RHEL)
+sudo dnf install -y golang gtk3-devel libayatana-appindicator-gtk3-devel
+
+# Clone this fork (not the upstream repo)
+git clone https://github.com/YOUR_USERNAME/geforcenow-presence.git
+cd geforcenow-presence
+
+# Build and install everything
+make install
+```
+
+Replace `YOUR_USERNAME` with your GitHub username.
 
 `make install` sets up everything needed for production use:
 
@@ -96,15 +120,6 @@ Install using your package manager (e.g., `sudo dnf install ./geforcenow-presenc
 | **Systemd Service** | `~/.config/systemd/user/geforcenow-presence.service` | Runs the binary as a background daemon on login |
 | **Desktop Entry** | `~/.local/share/applications/geforcenow-presence.desktop` | Shows in application launcher |
 
-After installing, enable auto-start:
-
-```bash
-# Start now + enable on login
-make enable
-# or equivalently:
-systemctl --user enable --now geforcenow-presence
-```
-
 ### First-Time Setup
 
 On GNOME Wayland, the GNOME Shell extension needs a session restart to load:
@@ -112,11 +127,11 @@ On GNOME Wayland, the GNOME Shell extension needs a session restart to load:
 1. Run `make install`
 2. **Log out and back in** (or restart GNOME Shell)
 3. Run `make enable`
-4. Launch a game on GeForce NOW — your Discord status will update automatically
+4. Launch a game on GeForce NOW — your Discord/Vesktop status will update automatically
 
 ---
 
-## 🗑️ Uninstalling (`make uninstall`)
+## 🗑️ Uninstalling
 
 ```bash
 make uninstall
@@ -148,50 +163,29 @@ rm -rf ~/.config/geforcenow-presence
 ./geforcenow-presence --delay 10    # wait 10s before starting
 ./geforcenow-presence --interval 5  # poll every 5 seconds
 
-# Tray Management
-The System Tray provides easy access to:
-- **Interval**: Current polling rate (Click to change to any integer)
-- **Delay**: Current startup delay (Click to change to any integer)
-- **Auto-start on Login**: Enable/Disable the background service
-- **Language**: Switch between available translations
-- **Custom Status Colors**: Choose colors for app states via Zenity
-- **Check for Updates**: Manually trigger a version check
-- **Open Config Folder**: Quickly access your local settings
-
 # Service management
 make status     # check service status
 make restart    # restart the service
 make disable    # stop and disable auto-start
 ```
 
+The system tray icon provides access to polling interval, startup delay, auto-start toggle, language switcher, custom status colors, update checker, and config folder.
+
 ---
 
 ## 📚 Documentation
 
-Detailed technical information for developers and advanced users has been moved to our `docs/` directory:
-
-- [**Architecture & Design**](docs/ARCHITECTURE.md) - Explains the D-Bus flow, Zero-Auth metadata pipeline, and Discord IPC mechanisms.
-- [**Building and Releasing**](docs/BUILDING_AND_RELEASING.md) - Explains how to compile from source, generate generic Linux `.tar.gz` distribution artifacts, and build `.deb`/`.rpm` packages.
-- [**Extending & Modifying**](docs/CONTRIBUTING.md) - Displays the project source tree and explains how to add support for web browsers, new Wayland compositors, and custom game overrides.
+- [**Architecture & Design**](docs/ARCHITECTURE.md) — D-Bus flow, Zero-Auth metadata pipeline, and Discord IPC mechanisms.
+- [**Building and Releasing**](docs/BUILDING_AND_RELEASING.md) — Compiling from source, `.deb`/`.rpm` packages.
+- [**Extending & Modifying**](docs/CONTRIBUTING.md) — How to add compositors, browser support, and custom game overrides.
 
 ---
 
 ## 🤝 Support & Contributing
 
-If you encounter issues or have feature requests for this Linux Go rewrite, please open an issue on [the GitHub repository](https://github.com/joshmckinney/geforcenow-presence/issues).
+For issues specific to this fork (Vesktop support), please open an issue here.
 
-Contributions are welcome! Areas where help is appreciated:
-
-- 🖥️ **More compositors** — Sway, KDE Plasma (KWin), River, etc.
-- 🧪 **Testing** — on different distros and desktop environments
-
----
-
-## 📜 License & Credits
-
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
-
-This is a Linux fork of the original [GeForce NOW Rich Presence](https://github.com/KarmaDevz/GeForce-NOW-Rich-Presence) by [KarmaDevz](https://github.com/KarmaDevz), completely rewritten from Python to Go for native Linux/Wayland support by [Josh McKinney](https://github.com/joshmckinney). 
+For issues with the underlying tool, see the [upstream repository](https://github.com/joshmckinney/geforcenow-presence).
 
 ---
 
@@ -210,6 +204,14 @@ The original project only detects the official Discord RPM as a running Discord 
 **Why it was broken:** Vesktop creates the Discord IPC socket at the exact same standard path (`$XDG_RUNTIME_DIR/discord-ipc-0`) as the official Discord RPM — so the IPC side was never the problem. The tool was simply checking whether a process named `Discord` was running, finding none, and giving up before even attempting to connect.
 
 Tested on **Fedora 44 Workstation** with Vesktop native RPM.
+
+---
+
+## 📜 License & Credits
+
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+
+Original project by [Josh McKinney](https://github.com/joshmckinney), itself a Linux rewrite of [GeForce NOW Rich Presence](https://github.com/KarmaDevz/GeForce-NOW-Rich-Presence) by [KarmaDevz](https://github.com/KarmaDevz).
 
 ---
 
