@@ -95,15 +95,29 @@ func LaunchGFN() bool {
 	return true
 }
 
-// LaunchDiscord starts Discord.
+// IsDiscordRunning returns true if Discord or any compatible client (Vesktop, etc.) is running.
+func IsDiscordRunning() bool {
+	// Check all known Discord-compatible process names
+	discordNames := []string{"discord", "vesktop", "equibop"}
+	for _, name := range discordNames {
+		if IsProcessRunning(name) {
+			return true
+		}
+	}
+	return false
+}
+
+// LaunchDiscord starts Discord or Vesktop.
 func LaunchDiscord() bool {
-	if IsProcessRunning("Discord") {
-		log.Println("💡 Discord is already running (launch skipped)")
+	if IsDiscordRunning() {
+		log.Println("💡 Discord (or Vesktop) is already running (launch skipped)")
 		return true
 	}
 
-	// Try common Discord binary locations
+	// Try common Discord and Vesktop binary locations
 	discordPaths := []string{
+		"/usr/bin/vesktop",
+		"/usr/local/bin/vesktop",
 		"/usr/bin/Discord",
 		"/usr/bin/discord",
 		"/usr/local/bin/discord",
