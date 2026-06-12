@@ -178,6 +178,10 @@ func onReady() {
 	systray.AddSeparator()
 	mVersion := systray.AddMenuItem(fmt.Sprintf(i18n.T("tray_version", "Version: %s"), appVersion), "")
 	mVersion.Disable()
+	mCredits := systray.AddMenuItem("Vesktop support by siadric", "")
+	mCredits.Disable()
+	mCreditsUp := systray.AddMenuItem("Original by joshmckinney", "")
+	mCreditsUp.Disable()
 	mExit := systray.AddMenuItem(i18n.T("tray_exit", "Exit"), "")
 
 	go func() {
